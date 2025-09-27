@@ -22,10 +22,10 @@
         --panel: #111214;       /* surface */
         --text: #f5f5f5;        /* white-ish */
         --muted: #9aa0a6;       /* muted grey */
-        --accent: #2df1a7;      /* neon mint */
-        --accent-2: #6ee7ff;    /* ice blue */
+        --accent: #dc2626;      /* sceptre red */
+        --accent-2: #ef4444;    /* lighter red */
         --danger: #ff5c7a;      /* for errors */
-        --ok: #a7f3d0;          /* success tint */
+        --ok: #fecaca;          /* success tint (red-based) */
         --focus: #ffffff;       /* focus ring */
 
         /* Sizing */
@@ -62,13 +62,13 @@
       .header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
       .brand { display: inline-flex; align-items: center; text-decoration: none; }
       .brand__logo {
-        width: 120px; height: 120px; display: block;
+        width: 180px; height: 180px; display: block;
       }
       .brand__logo img { 
         width: 100%; height: 100%; 
         object-fit: contain; 
         display: block; 
-        filter: drop-shadow(0 4px 12px rgba(45,241,167,0.15));
+        filter: drop-shadow(0 4px 12px rgba(220,38,38,0.15));
       }
 
       /* Hero */
@@ -81,7 +81,7 @@
         font-size: clamp(36px, 8vw, 72px); line-height: 1.03;
         text-wrap: balance;
       }
-      .hero__title .accent { color: var(--accent); text-shadow: 0 0 16px rgba(45,241,167,.24); }
+      .hero__title .accent { color: var(--accent); text-shadow: 0 0 16px rgba(220,38,38,.24); }
       .hero__subtitle { color: #d8d8d8; font-size: clamp(16px, 2.4vw, 20px); max-width: 54ch; }
 
       /* Form Card */
@@ -101,15 +101,15 @@
       .form__input::placeholder { color: #757982; }
       .form__input:focus {
         outline: none; border-color: var(--accent);
-        box-shadow: 0 0 0 3px rgba(45,241,167,0.18), 0 12px 30px rgba(0,0,0,.45);
+        box-shadow: 0 0 0 3px rgba(220,38,38,0.18), 0 12px 30px rgba(0,0,0,.45);
       }
       .form__btn {
         -webkit-appearance: none; appearance: none; cursor: pointer; border: none;
-        background: linear-gradient(180deg, var(--accent), #19cf8b);
-        color: #082014; font-weight: 800; letter-spacing: .02em; font-family: "Space Grotesk", Inter, system-ui;
+        background: linear-gradient(180deg, var(--accent), #b91c1c);
+        color: #ffffff; font-weight: 800; letter-spacing: .02em; font-family: "Space Grotesk", Inter, system-ui;
         padding: 14px 18px; border-radius: var(--radius-sm); font-size: 16px;
         transition: transform .06s ease, filter .2s ease, box-shadow .2s ease;
-        box-shadow: 0 10px 24px rgba(45,241,167,.16), inset 0 -6px 14px rgba(0,0,0,.18);
+        box-shadow: 0 10px 24px rgba(220,38,38,.16), inset 0 -6px 14px rgba(0,0,0,.18);
       }
       .form__btn:hover { filter: saturate(1.05) brightness(1.02); }
       .form__btn:active { transform: translateY(1px); }
@@ -124,13 +124,13 @@
       /* Status */
       .status { margin-top: 12px; min-height: 22px; font-size: 14px; }
       .status__msg { display: inline-flex; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 10px; background: #0f1115; border: 1px solid #22252b; }
-      .status__msg--ok { border-color: rgba(45,241,167,.35); background: rgba(45,241,167,.06); color: #ccffef; }
+      .status__msg--ok { border-color: rgba(220,38,38,.35); background: rgba(220,38,38,.06); color: #fecaca; }
       .status__msg--err { border-color: rgba(255,92,122,.45); background: rgba(255,92,122,.08); color: #ffd0d9; }
 
       /* Success Panel */
-      .success { display: none; margin-top: 18px; padding: 18px; border: 1px solid #28323a; border-radius: var(--radius); background: linear-gradient(180deg, rgba(45,241,167,.10), rgba(45,241,167,.02)); }
+      .success { display: none; margin-top: 18px; padding: 18px; border: 1px solid #3a2828; border-radius: var(--radius); background: linear-gradient(180deg, rgba(220,38,38,.10), rgba(220,38,38,.02)); }
       .success__title { font-family: "Space Grotesk", Inter, system-ui; font-size: 22px; margin: 0 0 6px; }
-      .success__text { color: #d2f4e6; margin: 0; }
+      .success__text { color: #fecaca; margin: 0; }
 
       /* Footer / style guide */
       .footer { padding: 48px 0 32px; }
@@ -263,8 +263,8 @@
           <div class="palette" role="list" aria-label="Color palette for ARDH">
             <div class="swatch" role="listitem"><div class="swatch__chip" style="background:#0B0B0B"></div><div class="swatch__label">#0B0B0B bg</div></div>
             <div class="swatch" role="listitem"><div class="swatch__chip" style="background:#111214"></div><div class="swatch__label">#111214 panel</div></div>
-            <div class="swatch" role="listitem"><div class="swatch__chip" style="background:#2DF1A7"></div><div class="swatch__label">#2DF1A7 accent</div></div>
-            <div class="swatch" role="listitem"><div class="swatch__chip" style="background:#6EE7FF"></div><div class="swatch__label">#6EE7FF accent-2</div></div>
+            <div class="swatch" role="listitem"><div class="swatch__chip" style="background:#DC2626"></div><div class="swatch__label">#DC2626 accent</div></div>
+            <div class="swatch" role="listitem"><div class="swatch__chip" style="background:#EF4444"></div><div class="swatch__label">#EF4444 accent-2</div></div>
             <div class="swatch" role="listitem"><div class="swatch__chip" style="background:#9AA0A6"></div><div class="swatch__label">#9AA0A6 muted</div></div>
           </div>
           <div>
