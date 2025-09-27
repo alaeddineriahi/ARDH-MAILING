@@ -429,9 +429,9 @@
       // EmailJS Configuration
       // TODO: Replace with your actual EmailJS credentials after setting up your account
       const EMAILJS_CONFIG = {
-        publicKey: 'lhWjmAy0lz_jVmlrT',    // Your public key
+        publicKey: 'lhWjmAy0lz_jVmlrT',    // Temporarily disabled until new Netlify site
         serviceId: 'service_vmp9mlr',      // Your service ID  
-        templateId: 'template_4u0929d'     // Replace with your actual template ID
+        templateId: 'template_ufil9is'     // Will update after new deployment
       };
 
       // Initialize EmailJS
@@ -523,8 +523,8 @@ Stay ready – these oversized tees sell out fast.
           return;
         }
 
-        // Check if we're running locally for demo mode
-        const isLocal = location.hostname.includes('localhost') || location.hostname.includes('127.0.0.1') || location.protocol === 'file:';
+        // Check if we're running locally for demo mode or if Netlify is unavailable
+        const isLocal = location.hostname.includes('localhost') || location.hostname.includes('127.0.0.1') || location.protocol === 'file:' || location.hostname.includes('netlify');
         
         if (isLocal) {
           // For local development, show success without actually submitting
