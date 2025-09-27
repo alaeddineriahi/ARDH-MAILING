@@ -1,0 +1,137 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ARDH — You're On The List!</title>
+    <meta name="description" content="Thank you for joining the ARDH drop notification list." />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    
+    <style>
+      :root {
+        --bg: #0b0b0b;
+        --panel: #111214;
+        --text: #f5f5f5;
+        --muted: #9aa0a6;
+        --accent: #2df1a7;
+        --accent-2: #6ee7ff;
+        --radius: 12px;
+        --shadow: 0 10px 30px rgba(0,0,0,.45);
+      }
+
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans";
+        color: var(--text);
+        background: radial-gradient(1200px 1200px at 80% -10%, rgba(45,241,167,0.12), transparent 50%),
+                    radial-gradient(900px 900px at -10% 10%, rgba(110,231,255,0.10), transparent 50%),
+                    var(--bg);
+        line-height: 1.45;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        min-height: 100vh;
+        padding: 24px;
+      }
+
+      .success-container {
+        max-width: 500px;
+        text-align: center;
+        background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+        border: 1px solid #22252b;
+        border-radius: var(--radius);
+        padding: 48px 32px;
+        box-shadow: var(--shadow);
+      }
+
+      .success-icon {
+        width: 80px;
+        height: 80px;
+        margin: 0 auto 24px;
+        background: linear-gradient(180deg, var(--accent), #19cf8b);
+        border-radius: 50%;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 36px;
+        color: #082014;
+        font-weight: bold;
+      }
+
+      .success-title {
+        font-family: "Space Grotesk", Inter, system-ui;
+        font-size: 28px;
+        font-weight: 700;
+        margin: 0 0 16px;
+        color: var(--accent);
+      }
+
+      .success-subtitle {
+        font-size: 18px;
+        color: #d2f4e6;
+        margin: 0 0 24px;
+        line-height: 1.5;
+      }
+
+      .success-details {
+        font-size: 15px;
+        color: var(--muted);
+        margin: 0 0 32px;
+      }
+
+      .back-btn {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 12px 24px;
+        background: #0f1115;
+        color: var(--text);
+        text-decoration: none;
+        border: 1px solid #2a2d35;
+        border-radius: var(--radius);
+        font-weight: 600;
+        transition: border-color 0.2s ease;
+      }
+
+      .back-btn:hover {
+        border-color: var(--accent);
+        text-decoration: none;
+      }
+
+      .brand-link {
+        color: var(--accent);
+        text-decoration: none;
+        font-weight: 600;
+      }
+
+      .brand-link:hover {
+        text-decoration: underline;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="success-container">
+      <div class="success-icon">✓</div>
+      <h1 class="success-title">You're On The List!</h1>
+      <p class="success-subtitle">
+        Thanks for joining the ARDH early access list. We'll notify you the moment the next drop goes live.
+      </p>
+      <p class="success-details">
+        Keep an eye on your inbox – you'll be among the first to know when our oversized streetwear tees are available.
+      </p>
+      <a href="/" class="back-btn">
+        ← Back to <span class="brand-link">ARDH</span>
+      </a>
+    </div>
+
+    <script>
+      // Auto-redirect after 10 seconds
+      setTimeout(() => {
+        window.location.href = '/';
+      }, 10000);
+    </script>
+  </body>
+</html>
