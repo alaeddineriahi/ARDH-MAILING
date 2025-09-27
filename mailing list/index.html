@@ -1,0 +1,408 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>ARDH — Drop Notify</title>
+    <meta name="description" content="Sign up to get notified when ARDH drops the next run of oversized streetwear tees." />
+    <meta property="og:title" content="ARDH — Next Drop" />
+    <meta property="og:description" content="Be first in line. Join the list for the ARDH drop." />
+    <meta property="og:type" content="website" />
+    <meta property="og:image" content="/assets/logo.png" />
+    <meta name="theme-color" content="#0B0B0B" />
+
+    <!-- Optional Google Fonts (allowed). Falls back to system if offline. -->
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+
+    <style>
+      :root {
+        /* Suggested ARDH palette */
+        --bg: #0b0b0b;          /* near-black */
+        --panel: #111214;       /* surface */
+        --text: #f5f5f5;        /* white-ish */
+        --muted: #9aa0a6;       /* muted grey */
+        --accent: #2df1a7;      /* neon mint */
+        --accent-2: #6ee7ff;    /* ice blue */
+        --danger: #ff5c7a;      /* for errors */
+        --ok: #a7f3d0;          /* success tint */
+        --focus: #ffffff;       /* focus ring */
+
+        /* Sizing */
+        --radius: 12px;
+        --radius-sm: 10px;
+        --shadow: 0 10px 30px rgba(0,0,0,.45);
+      }
+
+      /* Basic reset */
+      *, *::before, *::after { box-sizing: border-box; }
+      html, body { height: 100%; }
+      body {
+        margin: 0;
+        font-family: "Inter", system-ui, -apple-system, Segoe UI, Roboto, Ubuntu, Cantarell, "Helvetica Neue", Arial, "Noto Sans", "Apple Color Emoji", "Segoe UI Emoji";
+        color: var(--text);
+        background: radial-gradient(1200px 1200px at 80% -10%, rgba(45,241,167,0.12), transparent 50%),
+                    radial-gradient(900px 900px at -10% 10%, rgba(110,231,255,0.10), transparent 50%),
+                    var(--bg);
+        line-height: 1.45;
+        -webkit-font-smoothing: antialiased;
+        -moz-osx-font-smoothing: grayscale;
+      }
+
+      a { color: var(--accent); text-decoration: none; }
+      a:hover { text-decoration: underline; }
+
+      .container {
+        max-width: 960px;
+        margin: 0 auto;
+        padding: 24px;
+      }
+
+      /* Header / Brand */
+      .header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+      .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+      .brand__logo {
+        width: 44px; height: 44px; border-radius: 10px;
+        background: #0f1115; border: 1px solid #202228; display: grid; place-items: center;
+        overflow: hidden; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+      }
+      .brand__logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
+      .brand__name { font-family: "Space Grotesk", Inter, system-ui; font-weight: 700; letter-spacing: .06em; }
+
+      /* Hero */
+      .hero { padding: 48px 0 28px; }
+      .hero__eyebrow {
+        font-size: 12px; text-transform: uppercase; letter-spacing: .18em; color: var(--muted);
+      }
+      .hero__title {
+        margin: 10px 0 10px; font-family: "Space Grotesk", Inter, system-ui; font-weight: 700;
+        font-size: clamp(36px, 8vw, 72px); line-height: 1.03;
+        text-wrap: balance;
+      }
+      .hero__title .accent { color: var(--accent); text-shadow: 0 0 16px rgba(45,241,167,.24); }
+      .hero__subtitle { color: #d8d8d8; font-size: clamp(16px, 2.4vw, 20px); max-width: 54ch; }
+
+      /* Form Card */
+      .form-card {
+        margin-top: 26px; background: linear-gradient(180deg, rgba(255,255,255,0.04), rgba(255,255,255,0.02));
+        border: 1px solid #22252b; border-radius: var(--radius); padding: 18px; box-shadow: var(--shadow);
+        position: relative; overflow: clip;
+      }
+      .form {
+        display: grid; grid-template-columns: 1fr auto; gap: 10px; align-items: center;
+      }
+      .form__input {
+        width: 100%; background: #0f1115; border: 1px solid #2a2d35; color: var(--text);
+        border-radius: var(--radius-sm); padding: 14px 14px; font-size: 16px;
+        transition: border-color .2s ease, box-shadow .2s ease;
+      }
+      .form__input::placeholder { color: #757982; }
+      .form__input:focus {
+        outline: none; border-color: var(--accent);
+        box-shadow: 0 0 0 3px rgba(45,241,167,0.18), 0 12px 30px rgba(0,0,0,.45);
+      }
+      .form__btn {
+        -webkit-appearance: none; appearance: none; cursor: pointer; border: none;
+        background: linear-gradient(180deg, var(--accent), #19cf8b);
+        color: #082014; font-weight: 800; letter-spacing: .02em; font-family: "Space Grotesk", Inter, system-ui;
+        padding: 14px 18px; border-radius: var(--radius-sm); font-size: 16px;
+        transition: transform .06s ease, filter .2s ease, box-shadow .2s ease;
+        box-shadow: 0 10px 24px rgba(45,241,167,.16), inset 0 -6px 14px rgba(0,0,0,.18);
+      }
+      .form__btn:hover { filter: saturate(1.05) brightness(1.02); }
+      .form__btn:active { transform: translateY(1px); }
+      .form__btn:focus-visible { outline: 2px solid var(--focus); outline-offset: 2px; }
+
+      .helper-row { display: flex; align-items: center; gap: 12px; flex-wrap: wrap; margin-top: 10px; }
+      .note { color: var(--muted); font-size: 13px; }
+      .note--accent { color: #cfeee2; }
+      .note--danger { color: var(--danger); }
+      .kicker { color: var(--muted); font-size: 12px; letter-spacing: .02em; }
+
+      /* Status */
+      .status { margin-top: 12px; min-height: 22px; font-size: 14px; }
+      .status__msg { display: inline-flex; gap: 8px; align-items: center; padding: 8px 10px; border-radius: 10px; background: #0f1115; border: 1px solid #22252b; }
+      .status__msg--ok { border-color: rgba(45,241,167,.35); background: rgba(45,241,167,.06); color: #ccffef; }
+      .status__msg--err { border-color: rgba(255,92,122,.45); background: rgba(255,92,122,.08); color: #ffd0d9; }
+
+      /* Success Panel */
+      .success { display: none; margin-top: 18px; padding: 18px; border: 1px solid #28323a; border-radius: var(--radius); background: linear-gradient(180deg, rgba(45,241,167,.10), rgba(45,241,167,.02)); }
+      .success__title { font-family: "Space Grotesk", Inter, system-ui; font-size: 22px; margin: 0 0 6px; }
+      .success__text { color: #d2f4e6; margin: 0; }
+
+      /* Footer / style guide */
+      .footer { padding: 48px 0 32px; }
+      .palette { display: grid; grid-template-columns: repeat(5, minmax(0, 1fr)); gap: 10px; margin-top: 10px; }
+      .swatch { border-radius: 12px; overflow: hidden; border: 1px solid #22252b; background: #0f1115; }
+      .swatch__chip { height: 44px; }
+      .swatch__label { font-size: 12px; color: var(--muted); padding: 8px; text-align: center; }
+
+      .style-hint { margin-top: 26px; display: grid; gap: 6px; color: var(--muted); font-size: 14px; }
+
+      /* Small screens first; at 720px+, widen the form */
+      @media (min-width: 720px) {
+        .form-card { padding: 22px; }
+        .form { grid-template-columns: 1fr auto; }
+        .form__btn { padding: 14px 22px; font-size: 17px; }
+      }
+
+      /* Decorative noise overlay */
+      .grain {
+        pointer-events: none; position: fixed; inset: 0; opacity: .08; mix-blend-mode: soft-light; background-image: url('data:image/svg+xml;utf8,<svg xmlns="http://www.w3.org/2000/svg" width="160" height="160" viewBox="0 0 160 160"><filter id="n"><feTurbulence type="fractalNoise" baseFrequency="0.9" numOctaves="2" stitchTiles="stitch"/></filter><rect width="100%" height="100%" filter="url(%23n)" opacity="0.4"/></svg>');
+      }
+    </style>
+  </head>
+
+  <!--
+    ARDH Landing — Setup quicknotes
+    - Replace the logo file at /assets/logo.png (same path used below)
+    - Netlify Forms is enabled by default (free on Netlify): keep name="waitlist", data-netlify="true" and hidden form-name.
+    - Google Forms (fallback): paste your iframe embed URL in data-src; it lazy-loads only when opened.
+
+    Copy variants (pick one — update .hero__title, .hero__subtitle, and button text):
+      VARIANT A
+        Headline: Oversized, Unbothered. ARDH.
+        Sub: Street-grade tees for the next drop. Join the early access list.
+        Button: Notify me
+      VARIANT B
+        Headline: Built Big. Worn Hard.
+        Sub: ARDH is back soon — get first dibs on the drop.
+        Button: Get on the list
+      VARIANT C
+        Headline: Urban Uniform, Remixed.
+        Sub: Heavy tees. Clean shapes. Early list only.
+        Button: Text me when it hits (use email!)
+  -->
+
+  <body>
+    <div class="grain" aria-hidden="true"></div>
+    <header class="container header" role="banner">
+      <a class="brand" href="#" aria-label="ARDH home">
+        <span class="brand__logo" aria-hidden="true">
+          <!-- Replace /assets/logo.png with your logo image (keep the same path) -->
+          <img src="/assets/logo.png" alt="ARDH logo placeholder" />
+        </span>
+        <span class="brand__name">ARDH</span>
+      </a>
+      <span class="kicker">Drop incoming</span>
+    </header>
+
+    <main class="container" id="main" role="main">
+      <section class="hero">
+        <span class="hero__eyebrow">Early Access</span>
+        <h1 class="hero__title">Oversized, <span class="accent">Unbothered</span>. ARDH.</h1>
+        <p class="hero__subtitle">Street-grade tees for the next drop. Get on the early list and we’ll hit your inbox the moment it goes live.</p>
+
+        <div class="form-card" aria-labelledby="signup-title">
+          <h2 id="signup-title" class="sr-only" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">Join the ARDH drop list</h2>
+
+          <!-- Netlify Forms (free) -->
+          <form
+            id="notify-form"
+            class="form"
+            name="waitlist"
+            method="POST"
+            data-netlify="true"
+            netlify-honeypot="bot-field"
+            novalidate
+          >
+            <!-- Netlify fields -->
+            <input type="hidden" name="form-name" value="waitlist" />
+            <label class="sr-only" for="email" id="email-label" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">Email address</label>
+            <input
+              id="email"
+              class="form__input"
+              name="EMAIL"
+              type="email"
+              inputmode="email"
+              placeholder="your@email.com"
+              required
+              aria-required="true"
+              aria-labelledby="email-label"
+              aria-describedby="privacy-line"
+              autocomplete="email"
+            />
+            <button class="form__btn" id="submit-btn" type="submit" aria-label="Notify me about the ARDH drop">Notify me</button>
+
+            <!-- Honeypot for bots (leave empty) -->
+            <div style="position: absolute; left: -5000px;" aria-hidden="true" hidden>
+              <input type="text" name="hp_email" tabindex="-1" autocomplete="off" />
+            </div>
+            <!-- Netlify honeypot field -->
+            <div hidden aria-hidden="true">
+              <label>Don’t fill this out: <input name="bot-field" /></label>
+            </div>
+          </form>
+
+          <div class="helper-row" aria-live="polite">
+            <p id="privacy-line" class="note">We only use your email to notify about the drop — unsubscribe anytime.</p>
+            <p class="note note--accent">No spam. You can unsubscribe anytime. 🖤</p>
+          </div>
+
+          <div id="form-status" class="status" aria-live="polite" role="status"></div>
+
+          <div id="success-panel" class="success" aria-hidden="true">
+            <p class="success__title">You’re on the list ✳</p>
+            <p class="success__text">Watch your inbox. We’ll email you the second ARDH drops.</p>
+          </div>
+
+          <noscript>
+            <div class="status__msg">
+              JavaScript is off — the form will submit normally to Netlify and show a default success page. Thanks!
+            </div>
+          </noscript>
+        </div>
+      </section>
+
+      <section class="footer" aria-labelledby="style-title">
+        <h2 id="style-title" class="sr-only" style="position:absolute;left:-9999px;top:auto;width:1px;height:1px;overflow:hidden;">Style guide</h2>
+        <div class="style-hint">
+          <strong>Suggested palette</strong>
+          <div class="palette" role="list" aria-label="Color palette for ARDH">
+            <div class="swatch" role="listitem"><div class="swatch__chip" style="background:#0B0B0B"></div><div class="swatch__label">#0B0B0B bg</div></div>
+            <div class="swatch" role="listitem"><div class="swatch__chip" style="background:#111214"></div><div class="swatch__label">#111214 panel</div></div>
+            <div class="swatch" role="listitem"><div class="swatch__chip" style="background:#2DF1A7"></div><div class="swatch__label">#2DF1A7 accent</div></div>
+            <div class="swatch" role="listitem"><div class="swatch__chip" style="background:#6EE7FF"></div><div class="swatch__label">#6EE7FF accent-2</div></div>
+            <div class="swatch" role="listitem"><div class="swatch__chip" style="background:#9AA0A6"></div><div class="swatch__label">#9AA0A6 muted</div></div>
+          </div>
+          <div>
+            <strong>Fonts</strong>: Space Grotesk (display), Inter (UI/body). Both loaded above via Google Fonts; safe fallbacks included.
+          </div>
+          <div>
+            <strong>Privacy (Tunisian Arabic transliteration)</strong>: Nasta3mlou ken l-email mte3ek bach n3aytoulek 3al drop — tnajjem tensa7eb ay wa9t.
+          </div>
+          <details id="gform-alt">
+            <summary style="cursor:pointer">Alternate: Google Forms fallback (embed)</summary>
+            <div style="margin-top:12px" class="note">
+              <!-- Replace data-src with your Google Form embed URL; src stays blank to avoid 404s until opened -->
+              <iframe id="gform-iframe" title="ARDH waitlist (Google Forms)" src="about:blank" data-src="GOOGLE_FORM_EMBED_URL_HERE" width="100%" height="520" frameborder="0" marginheight="0" marginwidth="0" loading="lazy">Loading…</iframe>
+            </div>
+          </details>
+        </div>
+      </section>
+    </main>
+
+    <script>
+      /* Accessibility helper: prefer-reduced-motion */
+      try {
+        const prefersReduced = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (prefersReduced) {
+          document.documentElement.style.setProperty('--shadow', 'none');
+        }
+      } catch (e) {}
+
+      // Utilities
+      const $ = (sel, root=document) => root.querySelector(sel);
+      const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
+
+      const form = $('#notify-form');
+      const emailInput = $('#email');
+      const submitBtn = $('#submit-btn');
+      const statusEl = $('#form-status');
+      const successPanel = $('#success-panel');
+
+      // Render status message
+      function setStatus(type, msg) {
+        if (!statusEl) return;
+        const cls = type === 'ok' ? 'status__msg status__msg--ok' : 'status__msg status__msg--err';
+        statusEl.innerHTML = `<span class="${cls}">` + (type === 'ok' ? '✔ ' : '✕ ') + msg + '</span>';
+      }
+
+      function validateEmail(value) {
+        // Lightweight RFC5322-ish email test, good enough for client-side
+        const re = /^([^\s@]+)@([^\s@]+)\.([^\s@]{2,})$/i;
+        return re.test(String(value || '').trim());
+      }
+
+      // Handle Netlify AJAX with robust fallback to native POST
+      function onSubmit(ev) {
+        const email = emailInput.value.trim();
+
+        // Client-side validation
+        if (!validateEmail(email)) {
+          ev.preventDefault();
+          setStatus('err', 'Enter a valid email to join the list.');
+          emailInput.focus();
+          return;
+        }
+
+        // Honeypot check
+        const hp = form.querySelector('[name="hp_email"]');
+        if (hp && hp.value) {
+          ev.preventDefault();
+          setStatus('err', 'Bot detection triggered.');
+          return;
+        }
+
+        const preferNetlify = form.hasAttribute('data-netlify') && location.protocol.startsWith('http');
+        if (preferNetlify) {
+          ev.preventDefault();
+          setStatus('ok', 'One sec…');
+          submitBtn.disabled = true;
+
+          (async () => {
+            try {
+              const fd = new FormData(form);
+              if (!fd.get('form-name')) fd.set('form-name', form.getAttribute('name') || 'waitlist');
+              const body = new URLSearchParams();
+              for (const [k, v] of fd.entries()) body.append(k, v);
+              const resp = await fetch(window.location.pathname || '/', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+                body
+              });
+              if (resp && resp.ok) {
+                setStatus('ok', 'All set! You\'re on the list.');
+                successPanel.style.display = 'block';
+                successPanel.setAttribute('aria-hidden', 'false');
+                form.setAttribute('aria-hidden', 'true');
+                form.style.display = 'none';
+                try { form.reset(); } catch (e) {}
+                submitBtn.disabled = false;
+                return;
+              }
+            } catch (e) {
+              // ignore and fallback
+            }
+            // Native fallback so Netlify still captures
+            setStatus('ok', 'Submitting…');
+            submitBtn.disabled = false;
+            form.removeEventListener('submit', onSubmit);
+            form.submit();
+          })();
+        } else {
+          // Let it submit normally (local/no Netlify)
+          setStatus('ok', 'Submitting…');
+        }
+      }
+      form?.addEventListener('submit', onSubmit);
+
+      // Accessibility: submit with Enter key from input
+      emailInput?.addEventListener('keydown', (e) => {
+        if (e.key === 'Enter') {
+          e.preventDefault();
+          submitBtn?.click();
+        }
+      });
+
+      // Lazy-load Google Form iframe on open to prevent 404 spam in console
+      window.addEventListener('DOMContentLoaded', () => {
+        const details = document.getElementById('gform-alt');
+        const iframe = document.getElementById('gform-iframe');
+        if (details && iframe) {
+          let loaded = false;
+          const load = () => {
+            if (!loaded) {
+              const ds = iframe.getAttribute('data-src');
+              if (ds && ds !== 'GOOGLE_FORM_EMBED_URL_HERE') {
+                iframe.src = ds;
+                loaded = true;
+              }
+            }
+          };
+          details.addEventListener('toggle', () => { if (details.open) load(); });
+        }
+      });
+    </script>
+  </body>
+</html>
