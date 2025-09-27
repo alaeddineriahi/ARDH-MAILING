@@ -6,7 +6,10 @@
     <title>ARDH — Drop Notify</title>
     <meta name="description" content="Sign up to get notified when ARDH drops the next run of oversized streetwear tees." />
     <meta property="og:title" content="ARDH — Next Drop" />
-    <meta property="og:description" content="Be first in line. Join the list for the ARDH drop." />
+    <meta property="og          <div id="success-panel" class="success" aria-hidden="true">
+            <p class="success__title">You're on the list ✳</p>
+            <p class="success__text">Check your email for confirmation. We'll notify you the second ARDH drops.</p>
+          </div>cription" content="Be first in line. Join the list for the ARDH drop." />
     <meta property="og:type" content="website" />
     <meta property="og:image" content="/assets/logo.png" />
     <meta name="theme-color" content="#0B0B0B" />
@@ -14,6 +17,9 @@
     <!-- Optional Google Fonts (allowed). Falls back to system if offline. -->
     <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
     <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;600;700&family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    
+    <!-- EmailJS SDK for automated confirmation emails -->
+    <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
 
     <style>
       :root {
@@ -423,6 +429,58 @@
       const $ = (sel, root=document) => root.querySelector(sel);
       const $$ = (sel, root=document) => Array.from(root.querySelectorAll(sel));
 
+      // EmailJS Configuration
+      // TODO: Replace with your actual EmailJS credentials after setting up your account
+      const EMAILJS_CONFIG = {
+        publicKey: 'YOUR_EMAILJS_PUBLIC_KEY',    // Replace with your public key
+        serviceId: 'YOUR_EMAIL_SERVICE_ID',      // Replace with your service ID  
+        templateId: 'YOUR_EMAIL_TEMPLATE_ID'     // Replace with your template ID
+      };
+
+      // Initialize EmailJS
+      (function() {
+        if (typeof emailjs !== 'undefined' && EMAILJS_CONFIG.publicKey !== 'YOUR_EMAILJS_PUBLIC_KEY') {
+          emailjs.init(EMAILJS_CONFIG.publicKey);
+        }
+      })();
+
+      // Send confirmation email via EmailJS
+      async function sendConfirmationEmail(userEmail) {
+        if (typeof emailjs === 'undefined' || EMAILJS_CONFIG.publicKey === 'YOUR_EMAILJS_PUBLIC_KEY') {
+          console.log('EmailJS not configured - skipping confirmation email');
+          return false;
+        }
+
+        try {
+          const templateParams = {
+            to_email: userEmail,
+            from_name: 'ARDH',
+            reply_to: 'no-reply@ardh.com', // Replace with your email
+            user_email: userEmail,
+            brand_name: 'ARDH',
+            message: `Thanks for joining the ARDH drop list! 🔥
+
+We'll notify you the moment our next streetwear drop goes live. 
+
+Stay ready – these oversized tees sell out fast.
+
+— The ARDH Team`
+          };
+
+          const response = await emailjs.send(
+            EMAILJS_CONFIG.serviceId,
+            EMAILJS_CONFIG.templateId,
+            templateParams
+          );
+
+          console.log('Confirmation email sent successfully:', response);
+          return true;
+        } catch (error) {
+          console.error('Failed to send confirmation email:', error);
+          return false;
+        }
+      }
+
       const form = $('#notify-form');
       const emailInput = $('#email');
       const submitBtn = $('#submit-btn');
@@ -449,7 +507,7 @@
       }
 
       // Handle Netlify AJAX with robust fallback to native POST
-      function onSubmit(ev) {
+      async function onSubmit(ev) {
         const email = emailInput.value.trim();
 
         // Client-side validation
@@ -476,8 +534,17 @@
           ev.preventDefault();
           setStatus('ok', 'Demo mode - form submission simulated!');
           
-          setTimeout(() => {
-            setStatus('ok', 'All set! You\'re on the list.');
+          setTimeout(async () => {
+            // Try to send confirmation email even in demo mode
+            setStatus('ok', 'Sending confirmation email...');
+            const emailSent = await sendConfirmationEmail(email);
+            
+            if (emailSent) {
+              setStatus('ok', 'All set! Check your email for confirmation.');
+            } else {
+              setStatus('ok', 'All set! You\'re on the list.');
+            }
+            
             successPanel.style.display = 'block';
             successPanel.setAttribute('aria-hidden', 'false');
             form.setAttribute('aria-hidden', 'true');
@@ -485,11 +552,55 @@
             try { form.reset(); } catch (e) {}
           }, 1000);
         } else {
-          // For production (Netlify), let the form submit normally
-          // Netlify will handle the form processing and redirect to a success page
+          // For production (Netlify) - send confirmation email then submit form
+          ev.preventDefault(); // We'll handle submission manually after email
           setStatus('ok', 'Submitting…');
           submitBtn.disabled = true;
-          // Let the form submit naturally - don't prevent default
+          
+          // Send confirmation email first
+          setStatus('ok', 'Sending confirmation email...');
+          const emailSent = await sendConfirmationEmail(email);
+          
+          // Then submit to Netlify
+          setStatus('ok', 'Adding to waitlist...');
+          
+          // Create form data for Netlify submission
+          const formData = new FormData(form);
+          
+          try {
+            const netlifyResponse = await fetch('/', {
+              method: 'POST',
+              headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
+              body: new URLSearchParams(formData).toString()
+            });
+            
+            if (netlifyResponse.ok) {
+              if (emailSent) {
+                setStatus('ok', 'Perfect! Check your email for confirmation.');
+              } else {
+                setStatus('ok', 'All set! You\'re on the list.');
+              }
+              
+              setTimeout(() => {
+                successPanel.style.display = 'block';
+                successPanel.setAttribute('aria-hidden', 'false');
+                form.setAttribute('aria-hidden', 'true');
+                form.style.display = 'none';
+                try { form.reset(); } catch (e) {}
+              }, 1500);
+            } else {
+              throw new Error('Netlify submission failed');
+            }
+          } catch (netlifyError) {
+            console.error('Netlify submission error:', netlifyError);
+            if (emailSent) {
+              setStatus('ok', 'Email sent! There was an issue with our waitlist, but you\'re noted down.');
+            } else {
+              setStatus('err', 'Something went wrong. Please try again.');
+            }
+          } finally {
+            submitBtn.disabled = false;
+          }
         }
       }
       form?.addEventListener('submit', onSubmit);
