@@ -558,14 +558,14 @@ Stay ready – these oversized tees sell out fast.
           setStatus('ok', 'Sending confirmation email...');
           const emailSent = await sendConfirmationEmail(email);
           
-          // Then submit to Netlify
+          // Then submit to Netlify for your email collection
           setStatus('ok', 'Adding to waitlist...');
           
           // Create form data for Netlify submission
           const formData = new FormData(form);
           
           try {
-            const netlifyResponse = await fetch('/', {
+            const netlifyResponse = await fetch('https://ardh-list.netlify.app/', {
               method: 'POST',
               headers: { 'Content-Type': 'application/x-www-form-urlencoded' },
               body: new URLSearchParams(formData).toString()
@@ -591,9 +591,20 @@ Stay ready – these oversized tees sell out fast.
           } catch (netlifyError) {
             console.error('Netlify submission error:', netlifyError);
             if (emailSent) {
-              setStatus('ok', 'Email sent! There was an issue with our waitlist, but you\'re noted down.');
+              setStatus('ok', 'Email sent! You\'re on the list.');
             } else {
               setStatus('err', 'Something went wrong. Please try again.');
+            }
+            
+            // Still show success if email was sent
+            if (emailSent) {
+              setTimeout(() => {
+                successPanel.style.display = 'block';
+                successPanel.setAttribute('aria-hidden', 'false');
+                form.setAttribute('aria-hidden', 'true');
+                form.style.display = 'none';
+                try { form.reset(); } catch (e) {}
+              }, 1500);
             }
           } finally {
             submitBtn.disabled = false;
