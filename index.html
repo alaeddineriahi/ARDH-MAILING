@@ -60,14 +60,16 @@
 
       /* Header / Brand */
       .header { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-      .brand { display: inline-flex; align-items: center; gap: 12px; text-decoration: none; }
+      .brand { display: inline-flex; align-items: center; text-decoration: none; }
       .brand__logo {
-        width: 44px; height: 44px; border-radius: 10px;
-        background: #0f1115; border: 1px solid #202228; display: grid; place-items: center;
-        overflow: hidden; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.02);
+        width: 80px; height: 80px; display: block;
       }
-      .brand__logo img { width: 100%; height: 100%; object-fit: cover; display: block; }
-      .brand__name { font-family: "Space Grotesk", Inter, system-ui; font-weight: 700; letter-spacing: .06em; }
+      .brand__logo img { 
+        width: 100%; height: 100%; 
+        object-fit: contain; 
+        display: block; 
+        filter: drop-shadow(0 4px 12px rgba(45,241,167,0.15));
+      }
 
       /* Hero */
       .hero { padding: 48px 0 28px; }
@@ -178,11 +180,10 @@
     <div class="grain" aria-hidden="true"></div>
     <header class="container header" role="banner">
       <a class="brand" href="#" aria-label="ARDH home">
-        <span class="brand__logo" aria-hidden="true">
+        <span class="brand__logo">
           <!-- Replace /assets/logo.png with your logo image (keep the same path) -->
-          <img src="/assets/logo.png" alt="ARDH logo placeholder" />
+          <img src="/assets/logo.png" alt="ARDH logo" />
         </span>
-        <span class="brand__name">ARDH</span>
       </a>
       <span class="kicker">Drop incoming</span>
     </header>
