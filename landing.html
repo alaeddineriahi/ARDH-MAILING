@@ -24,30 +24,40 @@
   -->
   <style>
     :root {
+      /* Safe edge padding for small screens */
+      --edge-pad: clamp(10px, 4vw, 24px);
+      /* Global proportion control (monotonic). Tweak 0.85–1.10 if needed */
+      --scale: 1;
+      /* Desired fixed gap between headline and pedestal */
+      --hp-gap: clamp(16px, 2.2vh, 26px);
       /* Tunable spacing scales for consistent responsive offsets */
-      --space-1: clamp(8px, 1.5vw, 14px);
-      --space-2: clamp(12px, 2.2vw, 22px);
-      --space-3: clamp(16px, 3vw, 32px);
-      --space-4: clamp(20px, 4vw, 48px);
+      --space-1: clamp(6px, 1.2vw, 12px);
+      --space-2: clamp(10px, 1.8vw, 18px);
+      --space-3: clamp(14px, 2.4vw, 28px);
+      --space-4: clamp(18px, 3.2vw, 40px);
+  /* Background scale (visual zoom). 1 = fit, >1 = zoom in */
+  --bg-scale: 1;
 
       /* Max readable width of the headline image on large screens */
-  /* DOUBLE scale: much larger headline for desktop */
-  --headline-max: min(1600px, 90vw);
+      /* Large but not overwhelming; now scaled by a single knob */
+  --headline-max: clamp(calc(420px * var(--scale)), calc(96vw * var(--scale)), calc(880px * var(--scale)));
 
       /* Product box sizing range */
-  --box-min: 680px;
-  --box-ideal: 92vw;
-  --box-max: 1600px;
-  /* Push the product to the right; make this less negative to move it left */
-  --box-right: -28px;
+    --box-min: 600px;
+  --box-ideal: 88vw; /* desktop target; will decrease at narrower breakpoints */
+    --box-max: 1600px;
+  /* Push the product further to the right (more negative = farther right) */
+  --box-right: -24px;
 
       /* Logo top offset (smaller = higher). Tweak per breakpoint if needed */
-  --logo-top: clamp(2px, 1.2vh, 10px);
+  --logo-top: clamp(6px, 2vh, 18px);
 
   /* Pedestal positioning: align left edge with headline gutter */
-  --pedestal-left: calc(var(--space-3) + 130px);
-    /* Pedestal vertical offset from bottom; larger = higher */
-    --pedestal-bottom: clamp(180px, 18vh, 320px);
+  --pedestal-left: clamp(24px, 7vw, 120px);
+  /* Pedestal vertical offset from bottom; larger = higher */
+  --pedestal-bottom: clamp(140px, 22vh, 320px);
+  /* Safe space from right edge so the pedestal runs under the product */
+  --pedestal-right: clamp(14px, 6vw, 120px);
 
       /* Glassmorphism tokens */
       --glass-bg: linear-gradient(180deg, rgba(255,255,255,0.08) 0%, rgba(255,255,255,0.03) 100%);
@@ -76,29 +86,48 @@
       while allowing the headline to sit in the central track.
     */
     .hero {
-      height: 100svh; /* fixed to viewport so no scroll is required */
+      /* Robust viewport sizing across browsers */
+      height: 100vh;      /* fallback */
+      height: 100svh;     /* modern small viewport units */
+      height: 100dvh;     /* dynamic viewport height */
       display: grid;
       grid-template-columns: var(--space-3) 1fr var(--space-3);
       grid-template-rows: var(--space-3) 1fr var(--space-3);
       position: relative; /* establish containing block for absolutely positioned overlays */
       overflow: hidden; /* clip any overflow from oversized assets */
 
-      /* Fullscreen background image */
-      background-image: url('assets/BACKGROUND.png');
-      background-size: cover;
-      background-position: center;
-      background-repeat: no-repeat;
+  /* Fallback background image (primary is a positioned <img> below) */
+  background-image: url('assets/BACKGROUND.png');
+  background-size: cover;
+  background-position: center;
+  background-repeat: no-repeat;
       /* Optional subtle overlay for contrast on bright backgrounds */
       /* background-color: rgba(0,0,0,0.08); background-blend-mode: multiply; */
     }
 
-    /* Top-right brand logo overlay */
-    .logo {
+    /* Absolute background image that we can scale explicitly */
+    .bg {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover;      /* maintain aspect and fill */
+      object-position: center;
+      transform-origin: center center;
+      transform: scale(var(--bg-scale));
+      z-index: 0;             /* under everything else */
+      pointer-events: none;   /* ignore mouse/touch */
+      user-select: none;
+      -webkit-user-drag: none;
+    }
+
+  /* Top-right brand logo overlay */
+  .logo {
       position: absolute;
       top: var(--logo-top);
       right: var(--space-3);
-  /* Doubled logo size */
-  width: clamp(720px, 84vw, 1760px);
+        /* Larger base size; monotonic scaling without pixel floor */
+          width: min(90vw, 1800px);
       height: auto;
       /* Give it a soft lift from the background */
       filter: drop-shadow(0 2px 10px rgba(0,0,0,0.25));
@@ -115,7 +144,7 @@
       grid-row: 2;
       align-self: center;   /* vertical centering within middle row */
       justify-self: start;  /* left alignment within middle column */
-  width: min(var(--headline-max), 96vw);
+  width: min(var(--headline-max), 99vw);
       max-width: var(--headline-max);
       z-index: 2; /* ensure it's above any background accents */
       /* Allow click-through so pedestal form remains interactive */
@@ -135,13 +164,17 @@
     .pedestal {
       position: absolute;
       /* Anchor to the left edge */
-  left: var(--pedestal-left);
-  right: auto;
-  bottom: var(--pedestal-bottom);
-  /* Make it wide so content sits left; only the tip passes under the box */
-  width: min(62vw, 960px);
-  /* Let height grow with content while keeping a comfortable minimum */
-  min-height: clamp(160px, 24vh, 360px);
+      left: var(--pedestal-left);
+      right: var(--pedestal-right);
+      bottom: var(--pedestal-bottom);
+  /* Stretch between left and right so it always extends under the product */
+  width: auto;
+  /* With left/right set, allow full stretch */
+  max-width: none;
+  /* Let height grow with content while keeping a larger comfortable minimum */
+  min-height: clamp(140px, 24vh, 300px);
+      /* Ensure inner content never spills outside rounded panel */
+      overflow: hidden;
       z-index: 1; /* below product (z=2) but above background */
 
       /* Glassmorphism: subtle background, blur, soft borders/shadows */
@@ -165,25 +198,38 @@
       /* Increase vertical breathing room between rows */
       column-gap: 12px;
       row-gap: clamp(12px, 1.6vh, 20px);
-  align-items: center;
-  justify-items: stretch;  /* stretch children to full width */
+      align-items: center;
+      justify-items: stretch;  /* stretch children to full width */
       align-content: center;   /* center the whole stack vertically */
       padding: clamp(10px, 2vh, 18px) clamp(12px, 2.2vw, 22px);
       /* Typography for pedestal UI */
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     }
 
+    /* Keep all inner elements sized within the pedestal box */
+    .pedestal, .pedestal * { box-sizing: border-box; }
+
     /* Form inside pedestal */
     .pform {
       grid-column: 1 / -1;
       display: grid;
+      /* Single column; submit button sits below in .pform__actions */
       grid-template-columns: 1fr;
       gap: 12px;
       align-items: stretch;
       width: 100%;
+      max-width: 100%;
       margin: 0;
       transition: all .3s ease;
     }
+
+    .pform__actions {
+      grid-column: 1 / -1;
+      width: 100%;
+      margin-top: clamp(8px, 1.2vh, 14px);
+    }
+
+    .pform__input, .pform__btn { max-width: 100%; }
 
     .pform__input {
       width: 100%;
@@ -193,8 +239,8 @@
       color: #fff;
       border: 1px solid var(--glass-border);
       border-radius: 14px;
-      padding: 12px 14px;
-      font-size: clamp(14px, 1.8vw, 16px);
+  padding: 12px 14px;
+  font-size: clamp(14px, 1.6vw, 16px);
       line-height: 1.2;
       outline: none;
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.12), 0 6px 20px rgba(0,0,0,0.25);
@@ -222,6 +268,7 @@
     .pform__btn {
       -webkit-appearance: none;
       appearance: none;
+      display: block;
       cursor: pointer;
       border: 1px solid var(--glass-border);
       background: var(--glass-bg);
@@ -231,7 +278,7 @@
       font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
       padding: 14px 18px;
       border-radius: 14px;
-      font-size: clamp(14px, 1.8vw, 16px);
+      font-size: clamp(14px, 1.6vw, 16px);
       box-shadow: inset 0 1px 0 rgba(255,255,255,0.22), 0 12px 28px rgba(0,0,0,0.32), 0 2px 6px rgba(0,0,0,0.22);
       backdrop-filter: blur(12px) saturate(115%);
       -webkit-backdrop-filter: blur(12px) saturate(115%);
@@ -307,9 +354,6 @@
     }
     .pform__btn.is-loading::after {
       content: '';
-      position: absolute;
-      right: 16px;
-      top: 50%;
       width: 14px; height: 14px;
       margin-top: -7px;
       border-radius: 50%;
@@ -317,8 +361,6 @@
       border-top-color: transparent;
       animation: spin .8s linear infinite;
     }
-    @keyframes spin { to { transform: rotate(360deg); } }
-
     .pform__btn.is-success {
       cursor: default;
       white-space: normal;
@@ -337,7 +379,8 @@
       position: absolute;
       right: var(--box-right);
       bottom: 0;
-      width: clamp(var(--box-min), var(--box-ideal), var(--box-max));
+      /* Monotonic scaling: cap at max without a fixed px minimum */
+      width: min(var(--box-ideal), var(--box-max));
       z-index: 2;
       /* Allow click-through so pedestal form remains interactive */
       pointer-events: none;
@@ -378,56 +421,84 @@
     */
     @media (max-width: 1100px) {
       :root {
-        --box-right: -18px;
-  --pedestal-left: calc(var(--space-2) + 52px);
-        --pedestal-bottom: clamp(140px, 15vh, 240px);
+  --box-right: -26px;
+  --pedestal-left: clamp(20px, 6.5vw, 100px);
+  --pedestal-bottom: clamp(120px, 20vh, 300px);
+      /* Slightly adjust background zoom so composition reads well */
+      --bg-scale: 1.02;
       }
       .pedestal {
         left: var(--pedestal-left);
-        right: auto;
+        right: var(--pedestal-right);
         bottom: var(--pedestal-bottom);
-        width: min(64vw, 760px);
-        height: clamp(84px, 18vh, 200px);
+        width: auto;
+        max-width: none;
+        height: auto;
+        /* Slightly increase min-height so the 3D read holds on mid screens */
+        min-height: clamp(120px, 22vh, 260px);
       }
     }
 
     @media (max-width: 820px) {
       :root {
-        --headline-max: min(1360px, 98vw);
-        --box-ideal: 88vw; /* allow the box to take more width on tablets */
+        --headline-max: clamp(420px, 78vw, 980px);
+        --box-ideal: 90vw; /* larger on tablets so it doesn't feel small */
+        --bg-scale: 1.04;
       }
-  .logo { width: clamp(600px, 88vw, 1440px); }
+  /* Make the logo proportionally larger on tablets */
+  .logo { width: min(98vw, 1600px); }
     }
 
     @media (max-width: 560px) {
-  :root {
-    --headline-max: min(1200px, 98vw);
-    --box-ideal: 96vw; /* keep box legible but allow big presence on phones */
-    --box-right: -8px;
-  --logo-top: clamp(2px, 1vh, 8px);
-  --pedestal-left: calc(var(--space-2) + 40px);
-    --pedestal-bottom: clamp(100px, 12vh, 180px);
-  }
+      :root {
+        --headline-max: clamp(360px, 94vw, 840px);
+        --box-ideal: 92vw; /* much larger on phones for presence */
+        --box-right: -6px; /* bring the box further into view */
+        --logo-top: clamp(6px, 1.6vh, 10px);
+        --pedestal-left: clamp(14px, 6vw, 64px);
+        --pedestal-bottom: clamp(160px, 30vh, 260px);
+        --hp-gap: clamp(12px, 2vh, 18px);
+        --bg-scale: 1.06;
+      }
       .hero {
         /* a hair more breathing room at the edges on small screens */
         grid-template-columns: var(--space-2) 1fr var(--space-2);
         grid-template-rows: var(--space-2) 1fr var(--space-2);
       }
       .logo { top: var(--space-2); right: var(--space-2); }
+  /* Larger logo on small phones */
+  .logo { width: min(100vw, 1280px); }
       .pedestal {
-        left: var(--pedestal-left);
-        right: auto;
+        /* Pin to safe edges so it never exceeds screen width */
+        left: var(--edge-pad);
+        right: var(--edge-pad);
         bottom: var(--pedestal-bottom);
-        width: min(86vw, 560px);
-        height: clamp(70px, 16vh, 160px);
+        width: auto; /* let left/right define width */
+        max-width: 100%;
+        height: auto;
         border-radius: 14px;
+        overflow: hidden;
+      }
+  /* Stack inputs vertically on very narrow phones */
+  .pform { grid-template-columns: 1fr; }
+      /* Keep same monotonic formula on mobile */
+      .product { width: min(var(--box-ideal), var(--box-max)); }
+    }
+
+    /* Very short landscape devices: avoid overlaps by shrinking product and lifting pedestal */
+    @media (max-height: 420px) and (orientation: landscape) {
+      :root {
+        --pedestal-bottom: clamp(24px, 8vh, 64px);
+        --box-ideal: 34vw;
       }
     }
   </style>
 </head>
 <body>
   <main class="hero" role="main" aria-label="Hero section with background, logo, headline, and product">
-    <!-- Brand logo (top-right) -->
+    <!-- Scalable background image -->
+    <img class="bg" src="assets/BACKGROUND.png" alt="" aria-hidden="true" />
+  <!-- Brand logo (top-right) -->
     <img class="logo" src="assets/LOGO ARD.png" alt="ARD brand logo" decoding="async" />
 
     <!-- Headline and subtext image (left, vertically centered) -->
@@ -441,7 +512,6 @@
         <input type="hidden" name="form-name" value="waitlist" />
         <label for="pemail" class="sr-only">Email address</label>
         <input id="pemail" class="pform__input" name="EMAIL" type="email" inputmode="email" placeholder="Enter your email" autocomplete="email" required aria-required="true" />
-        <button id="psubmit" class="pform__btn" type="submit">Notify me</button>
         <!-- Honeypots: leave empty -->
         <div style="position:absolute; left:-5000px;" aria-hidden="true" hidden>
           <input type="text" name="hp_email" tabindex="-1" autocomplete="off" />
@@ -450,6 +520,9 @@
           <label>Don’t fill this out: <input name="bot-field" /></label>
         </div>
       </form>
+      <div class="pform__actions">
+        <button id="psubmit" class="pform__btn" type="submit" form="pedestal-form">Notify me</button>
+      </div>
       <div id="pstatus" class="pstatus" aria-live="polite" role="status"></div>
       <div id="psuccess" class="psuccess" aria-hidden="true">You’re on the list. We’ll email you the second it drops.</div>
     </div>
@@ -463,6 +536,43 @@
   <script src="https://cdn.jsdelivr.net/npm/@emailjs/browser@4/dist/email.min.js"></script>
   <script>
     (function(){
+      // Maintain a fixed gap between headline and pedestal
+      function positionPedestalWithGap(){
+        try {
+          const hero = document.querySelector('.hero');
+          const head = document.querySelector('.headline');
+          const ped = document.querySelector('.pedestal');
+          if(!hero || !head || !ped) return;
+
+          // reset any previous inline styles to measure natural sizes
+          ped.style.top = '';
+          ped.style.bottom = '';
+
+          const gap = parseFloat(getComputedStyle(document.documentElement).getPropertyValue('--hp-gap')) || 16;
+          const heroRect = hero.getBoundingClientRect();
+          const headRect = head.getBoundingClientRect();
+          const pedRect = ped.getBoundingClientRect();
+
+          // Proposed top = bottom of headline + gap relative to viewport
+          const proposedTop = headRect.bottom + gap - heroRect.top;
+          const requiredBottom = proposedTop + pedRect.height;
+
+          // If placing by top keeps pedestal within hero, use top; else fall back to bottom anchoring
+          if(requiredBottom <= heroRect.height) {
+            ped.style.top = proposedTop + 'px';
+            ped.style.bottom = 'auto';
+          } else {
+            ped.style.top = 'auto';
+            // keep existing CSS bottom var behavior
+          }
+        } catch(e) { /* no-op */ }
+      }
+
+      const ro = new ResizeObserver(() => positionPedestalWithGap());
+      window.addEventListener('load', positionPedestalWithGap);
+      window.addEventListener('resize', positionPedestalWithGap);
+      try { ro.observe(document.documentElement); } catch(e) {}
+
       // EmailJS configuration (same as previous index)
       const EMAILJS_CONFIG = {
         publicKey: 'lhWjmAy0lz_jVmlrT',
